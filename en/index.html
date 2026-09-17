@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giulia — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1c1620;
+    --surface: #241d29;
+    --ink: #f2ece6;
+    --ink-dim: #a99bae;
+    --accent: #e8a33d;
+    --line: rgba(242,236,230,0.14);
+    --serif: 'Fraunces', serif;
+    --sans: 'Work Sans', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+
+  /* HERO */
+  header.hero{padding:96px 0 72px; border-bottom:1px solid var(--line);}
+  header.hero .eyebrow{
+    color:var(--accent); font-family:var(--sans); font-size:14px; font-weight:600;
+    margin:0 0 18px;
+  }
+  header.hero h1{
+    font-family:var(--serif); font-weight:500; font-size:clamp(40px,7vw,64px);
+    margin:0 0 20px; line-height:1.05; letter-spacing:-0.01em;
+  }
+  header.hero p.bio{
+    font-size:18px; color:var(--ink-dim); max-width:52ch; margin:0 0 28px;
+  }
+  header.hero .meta{display:flex; gap:28px; flex-wrap:wrap; font-size:14px; color:var(--ink-dim);}
+  header.hero .meta a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line);}
+  header.hero .meta a:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* SECTION LABELS */
+  .section-label{
+    font-family:var(--sans); font-size:14px; color:var(--ink-dim);
+    margin:64px 0 24px; padding-top:8px;
+  }
+
+  /* PROJECT INDEX */
+  .project{
+    border-top:1px solid var(--line);
+  }
+  .project:last-child{border-bottom:1px solid var(--line);}
+  .project-toggle{
+    width:100%; background:none; border:none; color:var(--ink);
+    display:flex; align-items:baseline; justify-content:space-between; gap:20px;
+    padding:26px 0; cursor:pointer; text-align:left; font-family:var(--sans);
+  }
+  .project-toggle:hover .project-title{color:var(--accent);}
+  .project-title{
+    font-family:var(--serif); font-size:24px; font-weight:500; color:var(--ink);
+    transition:color .15s ease;
+  }
+  .project-tag{
+    font-size:13px; color:var(--ink-dim); white-space:nowrap; padding-top:6px;
+  }
+  .project-body{
+    display:grid; grid-template-rows:0fr; transition:grid-template-rows .35s ease;
+  }
+  .project-body.open{grid-template-rows:1fr;}
+  .project-body-inner{padding:0; overflow:hidden; min-height:0; transition:padding .35s ease;}
+  .project-body.open .project-body-inner{padding:4px 0 40px;}
+
+  .cover-placeholder, .media-placeholder{
+    width:100%; aspect-ratio:16/10; border:1px dashed var(--line); border-radius:2px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-dim); font-size:14px; margin-bottom:28px; text-align:center; padding:20px;
+  }
+  .media-placeholder{aspect-ratio:16/9;}
+
+  .field-label{
+    font-size:13px; color:var(--accent); margin:0 0 6px; font-weight:600;
+  }
+  .field-text{
+    color:var(--ink-dim); margin:0 0 28px; max-width:60ch;
+  }
+
+  .process{list-style:none; margin:0 0 32px; padding:0; counter-reset:step;}
+  .process li{
+    counter-increment:step; position:relative; padding:0 0 20px 44px; margin-bottom:0;
+  }
+  .process li::before{
+    content: counter(step, decimal-leading-zero);
+    position:absolute; left:0; top:0; font-family:var(--serif); font-size:14px; color:var(--accent);
+  }
+  .process li h4{margin:0 0 4px; font-size:16px; font-family:var(--sans); font-weight:600;}
+  .process li p{margin:0; color:var(--ink-dim); font-size:15px;}
+
+  .gallery-placeholder{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px;
+  }
+  .gallery-placeholder .cover-placeholder{margin-bottom:0; aspect-ratio:1/1;}
+
+  /* VIDEO GRID (griglia video verticali/orizzontali/quadrati) */
+  .video-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:28px;
+  }
+  .video-grid .cell{
+    aspect-ratio:9/16; border-radius:2px; overflow:hidden; background:var(--surface);
+    border:1px solid var(--line);
+  }
+  .video-grid .cell.wide{aspect-ratio:16/9; grid-column:span 2;}
+  .video-grid .cell.square{aspect-ratio:1/1;}
+  .video-grid .cell.portrait{aspect-ratio:4/5;}
+  .video-grid .cell video{width:100%; height:100%; object-fit:cover; display:block;}
+
+  /* CASI STUDIO (sottosezioni per singola azienda, dentro un progetto) */
+  .case-study{margin-bottom:36px;}
+  .case-study:last-child{margin-bottom:0;}
+  .case-study-title{
+    font-family:var(--sans); font-size:15px; font-weight:600; color:var(--ink);
+    margin:0 0 14px;
+  }
+  .video-grid.reel-pair{grid-template-columns:repeat(2, minmax(0,1fr)); max-width:340px; margin-bottom:0;}
+
+  /* MEDIA ROW (galleria a proporzioni reali: ogni immagine mantiene il proprio orientamento) */
+  .media-row{display:flex; flex-wrap:wrap; gap:16px; margin-bottom:28px;}
+  .media-row img{height:320px; width:auto; max-width:100%; object-fit:contain; border-radius:2px; display:block; flex:none;}
+
+  /* MEDIA FEATURE (singola immagine mostrata a parte, più grande, ben leggibile) */
+  .media-feature{margin-bottom:28px;}
+  .media-feature img{height:440px; width:auto; max-width:100%; object-fit:contain; border-radius:2px; display:block;}
+
+  /* MEDIA WIDE (immagine a piena larghezza della sezione, es. sequenza di pagine/layout) */
+  .media-wide{margin-bottom:28px;}
+  .media-wide img{width:100%; height:auto; display:block; border-radius:2px; object-fit:contain;}
+
+  /* GRIGLIA 3x2 (case study con foto reali, celle uniformi) */
+  .img-grid-3x2{display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:28px;}
+  .img-grid-3x2 .cell{aspect-ratio:1/1; border-radius:2px; overflow:hidden; background:var(--surface); border:1px solid var(--line);}
+  .img-grid-3x2 .cell img{width:100%; height:100%; object-fit:cover; display:block;}
+
+  /* COPPIA LOGHI (due contenitori affiancati) */
+  .logo-pair{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:28px;}
+  .logo-pair .logo-box{
+    flex:1; min-width:180px; aspect-ratio:1/1; border-radius:2px;
+    border:1px solid var(--line); background:var(--surface);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .logo-pair .logo-box img{max-width:100%; max-height:100%; object-fit:contain; display:block;}
+
+  /* VIDEO WIDE (screen recording a piena larghezza della sezione) */
+  .video-wide{margin-bottom:28px;}
+  .video-wide video{width:100%; height:auto; display:block; border-radius:2px;}
+
+  /* PRIMA / DOPO (confronto affiancato, ogni immagine mantiene le proprie proporzioni) */
+  .compare-pair{display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; margin-bottom:28px;}
+  .compare-item{
+    position:relative; width:min(360px, 100%); flex:none; overflow:hidden;
+    border-radius:2px; border:1px solid var(--line); background:var(--surface);
+  }
+  .compare-item img{display:block; width:100%; height:auto;}
+  .compare-label{
+    position:absolute; left:10px; bottom:10px; z-index:1;
+    background:rgba(28,22,32,0.75); color:var(--ink); font-family:var(--sans);
+    font-size:11px; font-weight:600; letter-spacing:0.03em; text-transform:uppercase;
+    padding:4px 10px; border-radius:20px;
+  }
+
+  /* LINK FIELD (es. sito live, PDF fascicolo) */
+  .field-link a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--accent);}
+  .field-link a:hover{opacity:0.8;}
+
+  /* DEVICE FRAMES (screen recording desktop + mobile affiancati) */
+  .device-row{display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; margin-bottom:28px;}
+  .device-frame{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:10px 10px 0;}
+  .device-frame.desktop{flex:1; min-width:280px;}
+  .device-frame.mobile{width:160px; border-radius:24px; padding:10px 8px;}
+  .device-frame .dots{display:flex; gap:6px; padding-bottom:8px;}
+  .device-frame .dots span{width:8px; height:8px; border-radius:50%; background:var(--ink-dim); display:inline-block;}
+  .device-frame video, .device-frame .cover-placeholder{width:100%; display:block; margin-bottom:0; border-radius:4px 4px 0 0;}
+  .device-frame.mobile video, .device-frame.mobile .cover-placeholder{border-radius:14px;}
+
+  /* TOOLS (programmi usati) */
+  .tools{display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin-bottom:32px;}
+  .tool{display:flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-dim);}
+  .tool-icon{
+    width:28px; height:28px; border-radius:50%; overflow:hidden; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tool-icon img{width:100%; height:100%; object-fit:contain; display:block;}
+  /* le icone senza padding integrato (After Effects, Premiere) vengono rimpicciolite
+     per allinearsi visivamente alla dimensione reale di Photoshop/Illustrator */
+  .tool-icon.compact img{width:72%; height:72%;}
+  .tool .icon-placeholder{
+    width:28px; height:28px; border:1px dashed var(--line); border-radius:50%; display:inline-block;
+  }
+
+  /* LIGHTBOX (click per ingrandire un'immagine) */
+  .lightbox-img{cursor:zoom-in;}
+  .lightbox{
+    position:fixed; inset:0; background:rgba(10,8,12,0.92);
+    display:none; align-items:center; justify-content:center;
+    padding:32px; z-index:1000; cursor:zoom-out;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%; max-height:100%; display:block; border-radius:4px; box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+
+  /* CONTACT */
+  footer{padding:80px 0 96px;}
+  footer .section-label{margin-top:0;}
+  footer p{font-size:18px; max-width:48ch; color:var(--ink-dim); margin:0 0 24px;}
+  footer .links{display:flex; gap:24px; flex-wrap:wrap;}
+  footer .links a{
+    color:var(--ink); text-decoration:none; font-size:15px; border-bottom:1px solid var(--line); padding-bottom:2px;
+  }
+  footer .links a:hover{color:var(--accent); border-color:var(--accent);}
+
+  @media (max-width:600px){
+    header.hero{padding:64px 0 48px;}
+    .project-toggle{flex-direction:column; gap:6px;}
+    .gallery-placeholder{grid-template-columns:1fr;}
+    .video-grid{grid-template-columns:1fr 1fr;}
+    .media-row img{height:220px;}
+    .media-feature img{height:320px;}
+    .img-grid-3x2{grid-template-columns:1fr 1fr;}
+    .logo-pair .logo-box{min-width:140px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ HERO — sostituisci nome, ruolo e bio ============ -->
+  <header class="hero">
+    <p class="eyebrow">Portfolio</p>
+    <h1>Giulia Mangraviti</h1>
+    <p class="bio">
+      Digital designer specialising in branding, web design and motion graphics. I create visual identities, digital content and graphic materials, with a focus on aesthetic consistency and user experience.
+    </p>
+    <div class="meta">
+      <a href="mailto:giumangraviti@gmail.com">giumangraviti@gmail.com</a>
+      <a href="https://www.linkedin.com/in/giulia-mangraviti-designer/" target="_blank">LinkedIn</a>
+      <span>Lamezia Terme, Italy</span>
+      <a href="../" class="lang-switch">🇮🇹 Italiano</a>
+    </div>
+  </header>
+
+  <!-- ============ INDICE PROGETTI ============ -->
+  <p class="section-label">Projects</p>
+
+  <!-- ---- PROGETTO 1 — SITO WEB BGEN ---- -->
+  <div class="project">
+    <button class="project-toggle" onclick="toggleProject(this)">
+      <span class="project-title">Bgen — Corporate website</span>
+      <span class="project-tag">Web design · UI/UX · Bgen (agency) · 2025</span>
+    </button>
+    <div class="project-body">
+      <div class="project-body-inner">
+
+        <div class="device-row">
+          <div class="device-frame desktop">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <video src="../assets/video/bgen-desktop.mp4" controls></video>
+            <!-- in alternativa a video: <img src="cover-desktop.jpg"> -->
+          </div>
+          <div class="device-frame mobile">
+            <video src="../assets/video/bgen-mobile.mp4" controls></video>
+          </div>
+        </div>
+
+        <p class="field-text">Complete redesign of the corporate website, kept consistent with the brand identity I developed myself: a small colour palette chosen for contrast and readability. The site is interactive, with custom features built in JavaScript and PHP; developed on WordPress with Elementor.</p>
+
+        <p class="field-label">View the website</p>
+        <p class="field-text field-link"><a href="https://www.bgen.it" target="_blank">bgen.it →</a> — scroll through to see the micro-interactions</p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- PROGETTO 2 — CONTENT CREATION / MOTION DESIGN BGEN ---- -->
+  <div class="project">
+    <button class="project-toggle" onclick="toggleProject(this)">
+      <span class="project-title">Bgen — Content creation & motion design</span>
+      <span class="project-tag">Social content · Motion · Bgen (agency) · 2025</span>
+    </button>
+    <div class="project-body">
+      <div class="project-body-inner">
+
+        <p class="field-label">Tools used</p>
+        <div class="tools">
+          <span class="tool"><span class="tool-icon compact"><img src="../assets/img/icons/adobe-after-effects.png"></span> After Effects</span>
+          <span class="tool"><span class="tool-icon compact"><img src="../assets/img/icons/adobe-premiere.png"></span> Premiere Pro</span>
+          <span class="tool"><span class="tool-icon"><img src="../assets/img/icons/adobe-photoshop.png"></span> Photoshop</span>
+          <span class="tool"><span class="tool-icon"><img src="../assets/img/icons/adobe-Illustrator.png"></span> Illustrator</span>
+        </div>
+
+        <p class="field-text">A selection of content created for the agency's social channels and seasonal campaigns. Motion graphics in After Effects, video editing in Premiere Pro and imagery produced with generative AI prompts, always in line with the brand's visual guidelines.</p>
+
+        <div class="video-grid">
+          <div class="cell"><video src="../assets/video/content-01.mp4" controls playsinline></video></div>
+          <div class="cell portrait"><video src="../assets/video/content-02.mp4" controls playsinline></video></div>
+          <div class="cell"><video src="../assets/video/content-03.mp4" controls playsinline></video></div>
+          <div class="cell square"><video src="../assets/video/content-04.mp4" controls playsinline></video></div>
+          <div class="cell wide"><video src="../assets/video/oil-spot.mp4" controls playsinline></video></div>
+          <div class="cell wide"><video src="../assets/video/wine-spot.mp4" controls playsinline></video></div>
+        </div>
+
+        <p class="field-label">Case studies</p>
+
+        <div class="case-study">
+          <h4 class="case-study-title">Content creation for Naturbelle</h4>
+          <p class="field-text">Footage shot entirely by me on a smartphone and edited in Premiere Pro, with short on-screen captions explaining the benefits of the treatments — always staying true to the brand's visual identity.</p>
+          <div class="video-grid reel-pair">
+            <div class="cell"><video src="../assets/video/naturbelle-01.mp4" controls playsinline></video></div>
+            <div class="cell"><video src="../assets/video/naturbelle-02.mp4" controls playsinline></video></div>
+          </div>
+        </div>
+
+        <div class="case-study">
+          <h4 class="case-study-title">IEF — Italian Export Forum</h4>
+          <p class="field-text">At the client's request I designed new cover images for their social channels in Photoshop, with a visually stronger and more evocative style consistent with the company's positioning. I also managed Lorenzo Zurino's online communication and designed the posters for two events, including the Stati Generali dell'Export: on that occasion I handled the entire communication, covering the event live to shoot video and material to republish on social media, as well as producing the roll-up banners and overseeing photography and video.</p>
+
+          <div class="media-row">
+            <img class="lightbox-img" src="../assets/img/copertina-ief.jpg" alt="IEF cover image">
+            <img class="lightbox-img" src="../assets/img/copertina02-ief.jpg" alt="IEF cover image 2">
+            <img class="lightbox-img" src="../assets/img/content-zurino-ief.jpg" alt="Lorenzo Zurino content for IEF">
+            <img class="lightbox-img" src="../assets/img/locandina-evolio-ief.jpg" alt="Evolio 2026 poster">
+          </div>
+
+          <p class="field-label">Before and after — poster restyling</p>
+          <div class="compare-pair">
+            <div class="compare-item">
+              <img class="lightbox-img" src="../assets/img/locandina-prima-ief.jpg" alt="Poster before the restyling">
+              <span class="compare-label">Before</span>
+            </div>
+            <div class="compare-item">
+              <img class="lightbox-img" src="../assets/img/locandina-dopo-ief.png" alt="Poster after the restyling">
+              <span class="compare-label">After</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prossimo caso studio: duplica il blocco <div class="case-study">...</div> qui sopra per un'altra azienda -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- PROGETTO 3 — SITO WEB NIKITENA ---- -->
+  <div class="project">
+    <button class="project-toggle" onclick="toggleProject(this)">
+      <span class="project-title">Nikitena Cyber Security</span>
+      <span class="project-tag">Web design · UI/UX · Bgen client · 2025</span>
+    </button>
+    <div class="project-body">
+      <div class="project-body-inner">
+
+        <p class="field-text">Starting from the existing logo, I built the brand's entire visual identity: a more technical tone, glow effects and an extended logo palette, for a style that is instantly recognisable in the cyber security sector. I developed the website (45 pages covering all the company's services), social content and posters, and set up the layout of a corporate brochure requested by the client, keeping the same graphic elements in a more refined version.</p>
+
+        <div class="video-wide">
+          <video src="../assets/video/nikitena-desktop.mp4" controls playsinline></video>
+        </div>
+
+        <div class="media-wide">
+          <img class="lightbox-img" src="../assets/img/NIKITENA-mockup01.jpg" alt="Nikitena homepage mockup 1">
+        </div>
+        <div class="media-wide">
+          <img class="lightbox-img" src="../assets/img/NIKITENA-mockup02.jpg" alt="Nikitena homepage mockup 2">
+        </div>
+
+        <p class="field-label">Gallery</p>
+        <div class="media-row">
+          <img class="lightbox-img" src="../assets/img/nikitena-01.jpg" alt="Nikitena social content 1">
+          <img class="lightbox-img" src="../assets/img/nikitena-02.jpg" alt="Nikitena social content 2">
+        </div>
+
+        <div class="media-feature">
+          <img class="lightbox-img" src="../assets/img/nikitena-03.jpg" alt="Nikitena poster">
+        </div>
+
+        <div class="media-wide">
+          <img class="lightbox-img" src="../assets/img/nikitena-04.jpg" alt="Magazine-style article page sequence for Nikitena">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- PROGETTO 7 — VIKING MEDIEVAL ---- -->
+  <div class="project">
+    <button class="project-toggle" onclick="toggleProject(this)">
+      <span class="project-title">Viking Medieval</span>
+      <span class="project-tag">Graphic design · Content · Viking Medieval association</span>
+    </button>
+    <div class="project-body">
+      <div class="project-body-inner">
+
+        <p class="field-text">Starting from a rough idea from the client — an association dedicated to Viking-style medieval combat — I developed a distinctive logo. After a phase of research and testing I chose to stay close to Viking imagery, using the Drakkar as the symbol and opting for an illustrative style rather than a minimal graphic solution. From the final logos (positive and negative versions) I then produced mockups with generative AI prompts, applying my artwork, to present the result to the client.</p>
+
+        <div class="img-grid-3x2">
+          <div class="cell"><img class="lightbox-img" src="../assets/img/REF_MVM.png" alt="Viking Medieval reference 1"></div>
+          <div class="cell"><img class="lightbox-img" src="../assets/img/REF-02_MVM.png" alt="Viking Medieval reference 2"></div>
+          <div class="cell"><img class="lightbox-img" src="../assets/img/REF-03-MVM.jpeg" alt="Viking Medieval reference 3"></div>
+          <div class="cell"><img class="lightbox-img" src="../assets/img/TEST-01_MVM.png" alt="Viking Medieval design test 1"></div>
+          <div class="cell"><img class="lightbox-img" src="../assets/img/TEST-02-MVM.png" alt="Viking Medieval design test 2"></div>
+          <div class="cell"><img class="lightbox-img" src="../assets/img/TEST-03-MVM.png" alt="Viking Medieval design test 3"></div>
+        </div>
+
+        <p class="field-label">Final logos</p>
+        <div class="logo-pair">
+          <div class="logo-box"><img class="lightbox-img" src="../assets/img/logo-def01.png" alt="Viking Medieval final logo 1"></div>
+          <div class="logo-box"><img class="lightbox-img" src="../assets/img/logo-def02.png" alt="Viking Medieval final logo 2"></div>
+        </div>
+
+        <p class="field-label">Mockup</p>
+        <div class="media-wide">
+          <img class="lightbox-img" src="../assets/img/mockup-viking-01.png" alt="Viking Medieval mockup 1">
+        </div>
+        <div class="media-wide">
+          <img class="lightbox-img" src="../assets/img/mockup-viking-02.png" alt="Viking Medieval mockup 2">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- PROGETTO 8 — MANUALE GDR IMPAGINATO ---- -->
+  <div class="project">
+    <button class="project-toggle" onclick="toggleProject(this)">
+      <span class="project-title">RPG Manual — Editorial layout</span>
+      <span class="project-tag">Editorial design · Agency · 2025 · 50 pages</span>
+    </button>
+    <div class="project-body">
+      <div class="project-body-inner">
+
+        <div class="media-wide">
+          <img class="lightbox-img" src="../assets/img/mockup-GDR.jpg" alt="RPG manual layout mockup">
+        </div>
+
+        <p class="field-text">The first image is a mockup created by applying my artwork with generative AI prompts. Starting from a draft text, I was asked to produce a Dungeons & Dragons-style player's manual: laying out over 50 pages on a very tight deadline was a real challenge, generating the images with AI and rewriting all the text, with particular attention to visual hierarchy and stylistic consistency. Layout produced mainly in InDesign.</p>
+
+        <p class="field-label">Browse the manual online</p>
+        <p class="field-text field-link"><a href="https://heyzine.com/flip-book/acedea4f52.html#page/1" target="_blank">Browse the manual online →</a></p>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p class="section-label">Contact</p>
+    <div class="links">
+      <a href="mailto:giumangraviti@gmail.com">giumangraviti@gmail.com</a>
+      <a href="https://www.linkedin.com/in/giulia-mangraviti-designer/" target="_blank">LinkedIn</a>
+      <span>Lamezia Terme, Italy</span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+  function openLightbox(src, alt){
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    img.src = src;
+    img.alt = alt || '';
+    lb.classList.add('open');
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+  document.querySelectorAll('.lightbox-img').forEach((img) => {
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(img.src, img.alt);
+    });
+  });
+
+  function toggleProject(btn){
+    const body = btn.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    document.querySelectorAll('.project-body.open').forEach(el => el.classList.remove('open'));
+    if(!isOpen){ body.classList.add('open'); }
+  }
+  // Apri il primo progetto di default
+  document.addEventListener('DOMContentLoaded', () => {
+    const first = document.querySelector('.project-toggle');
+    if(first) toggleProject(first);
+  });
+</script>
+
+</body>
+</html>
